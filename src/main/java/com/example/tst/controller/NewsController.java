@@ -1,6 +1,7 @@
 package com.example.tst.controller;
 
 import com.example.tst.entity.NewsEntity;
+import com.example.tst.model.NewsCreate;
 import com.example.tst.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping({"/news"})
 public class NewsController {
-    @Autowired
+
     private NewsService newsService;
 
-    public NewsController() {
+    @Autowired
+    public NewsController(NewsService newsService) {
+        this.newsService = newsService;
     }
 
     @PostMapping
-    public ResponseEntity createNews(@RequestBody NewsEntity news, @RequestParam Long typeId) { // запихнуть
+    public ResponseEntity createNews(@RequestBody NewsCreate news) { // запихнуть
         try {
-            return ResponseEntity.ok(this.newsService.post(news, typeId));
+            return ResponseEntity.ok(this.newsService.post(news));
         } catch (Exception var4) {
             return ResponseEntity.badRequest().body("Error");
         }
@@ -36,8 +39,8 @@ public class NewsController {
         try {
             if(id == null)
                 return ResponseEntity.ok(this.newsService.getAllNews());
-            else
-                return ResponseEntity.ok(this.newsService.getNews(id));
+
+            return ResponseEntity.ok(this.newsService.getOneNews(id));
         } catch (Exception var2) {
             return ResponseEntity.badRequest().body("Error");
         }

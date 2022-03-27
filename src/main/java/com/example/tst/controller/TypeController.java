@@ -7,13 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping({"/type"})
 public class TypeController {
-    @Autowired
+
     private TypeService typeService;
 
-    public TypeController() {
+    @Autowired
+    public TypeController(TypeService typeService) {
+        this.typeService = typeService;
     }
 
     @PostMapping
@@ -31,8 +35,8 @@ public class TypeController {
         try {
             if(id == null)
                 return ResponseEntity.ok(this.typeService.getAllType());
-            else
-                return ResponseEntity.ok(this.typeService.getOneType(id));
+
+            return ResponseEntity.ok(this.typeService.getOneType(id));
         } catch (Exception var2) {
             return ResponseEntity.badRequest().body("Error");
         }

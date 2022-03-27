@@ -14,17 +14,30 @@ import javax.persistence.Table;
 )
 public class NewsEntity {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
-    private String s_description;
-    private String l_description;
+    private String shortDescription;
+    private String longDescription;
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getLongDescription() {
+        return longDescription;
+    }
+
+    public void setLongDescription(String longDescription) {
+        this.longDescription = longDescription;
+    }
+
     @ManyToOne
-    @JoinColumn(
-            name = "type_id"
-    )
+    @JoinColumn(name = "type_id")
     private TypeEntity type;
 
     public Long getId() {
@@ -52,22 +65,6 @@ public class NewsEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getS_description() {
-        return this.s_description;
-    }
-
-    public void setS_description(String s_description) {
-        this.s_description = s_description;
-    }
-
-    public String getL_description() {
-        return this.l_description;
-    }
-
-    public void setL_description(String l_description) {
-        this.l_description = l_description;
     }
 }
 

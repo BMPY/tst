@@ -3,13 +3,14 @@ package com.example.tst.service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.tst.entity.NewsEntity;
 import com.example.tst.entity.TypeEntity;
 import com.example.tst.exception.NotFoundNewsException;
-import com.example.tst.model.News;
-import com.example.tst.model.NewsForType;
+import com.example.tst.exception.NotFoundTypeException;
+import com.example.tst.model.*;
 import com.example.tst.respository.NewsRespository;
 import com.example.tst.respository.TypeRespository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +18,30 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NewsService {
-    @Autowired
     private NewsRespository newsRespository;
-    @Autowired
     private TypeRespository typeRespository;
 
-    public NewsService() {
+    @Autowired
+    public NewsService(NewsRespository newsRespository, TypeRespository typeRespository) {
+        this.newsRespository = newsRespository;
+        this.typeRespository = typeRespository;
     }
 
     public News post(NewsEntity news, Long typeId) {
         TypeEntity type = (TypeEntity)this.typeRespository.findById(typeId).get();
         news.setType(type);
         return News.toModel((NewsEntity)this.newsRespository.save(news));
+    }
+    public News post(NewsCreate news) {
+        NewsEntity newsEntity = new NewsEntity();
+        TypeEntity type = (TypeEntity)this.typeRespository.findById(news.getTypeId()).get();
+
+        newsEntity.setType(type);
+        newsEntity.setName(news.getName());
+        newsEntity.setShortDescription(news.getShortDescription());
+        newsEntity.setLongDescription(news.getLongDescription());
+
+        return News.toModel((NewsEntity)this.newsRespository.save(newsEntity));
     }
 
     public List<News> getAllNews() {
@@ -43,14 +56,12 @@ public class NewsService {
         return news;
     }
 
-    public List<NewsForType> getNews(Long typeId) throws NotFoundNewsException {
-        TypeEntity type = (TypeEntity)this.typeRespository.findById(typeId).get();
-        List<NewsForType> list = type.getNews().stream().map(NewsForType::toModel).collect(Collectors.toList());
-        if (type == null) {
-            throw new NotFoundNewsException("Not found the news by type");
-        } else {
-            return list;
-        }
+    public News getOneNews(Long id) throws NotFoundNewsException {
+        Optional<NewsEntity> news = this.newsRespository.findById(id);
+        if (news.isEmpty())
+            throw new NotFoundNewsException("Not found the news");
+
+        return News.toModel(news.get());
     }
 
     public Long delete(Long id) {

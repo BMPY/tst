@@ -3,6 +3,7 @@ package com.example.tst.service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import com.example.tst.entity.TypeEntity;
 import com.example.tst.exception.NotFoundTypeException;
@@ -13,10 +14,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TypeService {
-    @Autowired
+
     private TypeRespository typeRespository;
 
-    public TypeService() {
+    @Autowired
+    public TypeService(TypeRespository typeRespository) {
+        this.typeRespository = typeRespository;
     }
 
     public TypeEntity post(TypeEntity type) {
@@ -36,12 +39,12 @@ public class TypeService {
     }
 
     public Type getOneType(Long id) throws NotFoundTypeException {
-        TypeEntity type = this.typeRespository.findById(id).get();
-        if (type == null) {
+        Optional<TypeEntity> type = this.typeRespository.findById(id);
+        if (type.isEmpty()) {
             throw new NotFoundTypeException("Not found the type");
-        } else {
-            return Type.toModel(type);
         }
+
+        return Type.toModel(type.get());
     }
 
     public Long delete(Long id) {

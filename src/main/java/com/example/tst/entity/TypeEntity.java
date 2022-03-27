@@ -16,7 +16,7 @@ import javax.persistence.Table;
 public class TypeEntity {
     @Id
     @GeneratedValue(
-            strategy = GenerationType.IDENTITY
+            strategy = GenerationType.SEQUENCE
     )
     private Long id;
     private String name;
