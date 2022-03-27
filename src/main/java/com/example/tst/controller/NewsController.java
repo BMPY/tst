@@ -23,7 +23,7 @@ public class NewsController {
     }
 
     @PostMapping
-    public ResponseEntity createNews(@RequestBody NewsEntity news, @RequestParam Long typeId) {
+    public ResponseEntity createNews(@RequestBody NewsEntity news, @RequestParam Long typeId) { // запихнуть
         try {
             return ResponseEntity.ok(this.newsService.post(news, typeId));
         } catch (Exception var4) {
@@ -32,19 +32,13 @@ public class NewsController {
     }
 
     @GetMapping
-    public ResponseEntity getNews() {
+    public ResponseEntity getNews(@RequestParam(required = false) Long id) {
         try {
-            return ResponseEntity.ok(this.newsService.getAllNews());
+            if(id == null)
+                return ResponseEntity.ok(this.newsService.getAllNews());
+            else
+                return ResponseEntity.ok(this.newsService.getNews(id));
         } catch (Exception var2) {
-            return ResponseEntity.badRequest().body("Error");
-        }
-    }
-
-    @GetMapping({"/{typeId}"})
-    public ResponseEntity getNewsByType(@PathVariable Long typeId) {
-        try {
-            return ResponseEntity.ok(this.newsService.getNews(typeId));
-        } catch (Exception var3) {
             return ResponseEntity.badRequest().body("Error");
         }
     }

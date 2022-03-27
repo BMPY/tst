@@ -36,7 +36,7 @@ public class TypeService {
     }
 
     public Type getOneType(Long id) throws NotFoundTypeException {
-        TypeEntity type = (TypeEntity)this.typeRespository.findById(id).get();
+        TypeEntity type = this.typeRespository.findById(id).get();
         if (type == null) {
             throw new NotFoundTypeException("Not found the type");
         } else {

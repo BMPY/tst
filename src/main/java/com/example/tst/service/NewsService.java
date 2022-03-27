@@ -45,7 +45,7 @@ public class NewsService {
 
     public List<NewsForType> getNews(Long typeId) throws NotFoundNewsException {
         TypeEntity type = (TypeEntity)this.typeRespository.findById(typeId).get();
-        List<NewsForType> list = (List)type.getNews().stream().map(NewsForType::toModel).collect(Collectors.toList());
+        List<NewsForType> list = type.getNews().stream().map(NewsForType::toModel).collect(Collectors.toList());
         if (type == null) {
             throw new NotFoundNewsException("Not found the news by type");
         } else {
